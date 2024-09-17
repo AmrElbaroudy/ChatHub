@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "522513257059",
+    "project_id": "chathub-94c90",
+    "storage_bucket": "chathub-94c90.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:522513257059:android:5ecacd57ffa49a02925e56",
+        "android_client_info": {
+          "package_name": "com.elbaroudy.chathub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeCBYAtp2QREX0MsyocxNOis5kGjeBhiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
