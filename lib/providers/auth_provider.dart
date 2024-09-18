@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:chat_hub/models/user_model.dart';
 import 'package:chat_hub/utilites/methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../constant.dart';
 class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isSuccessful = false;
@@ -18,6 +23,32 @@ class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  //check if user exists in firebase
+  Future<bool> checkUserExists() async {
+    DocumentSnapshot documentSnapshot = await _db.collection(Constant.user).doc(_uid).get();
+    return documentSnapshot.exists;
+  }
+// get user data from fire store
+  Future<void> getUserDataFromFirestore() async {
+    DocumentSnapshot documentSnapshot = await _db.collection(Constant.user).doc(_uid).get();
+    _userModel = UserModel.fromMap(documentSnapshot.data() as Map<String, dynamic>);
+    notifyListeners();
+  }
+  //save user data to shared preferences
+  Future<void> saveUserDataToSP() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    await sp.setString(Constant.userModel, jsonEncode(_userModel!.toMap()));
+  }
+
+  //get user data from shared preferences
+  Future<void> getUserDataFromSP() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    String data = sp.getString(Constant.userModel) ?? '';
+    _userModel = UserModel.fromMap(jsonDecode(data) );
+    notifyListeners();
+  }
+
   //Sign in with phone number
   Future<void> signInWithPhone({required String phoneNumber, required BuildContext context}) async {
     _isLoading = true;
@@ -43,7 +74,10 @@ class AuthProvider extends ChangeNotifier {
         _isLoading = false;
         notifyListeners();
         //navigate to OTP screen
-        print('navigate to OTP screen');
+        Navigator.of(context).pushNamed(Constant.otp, arguments: {
+          Constant.phoneNumber: phoneNumber,
+          Constant.verificationId: verificationId
+        });
 
       },
       codeAutoRetrievalTimeout: (String verificationId) {
@@ -51,6 +85,22 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();}
     );
   }
-
-
-}
+// verify otp code
+  Future<void> verifyOtp({required String verificationId, required String otpCode, required BuildContext context,required Function onSuccess}) async {
+    _isLoading = true;
+    notifyListeners();
+    final credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: otpCode);
+    await _auth.signInWithCredential(credential).then((value) async {
+      _uid = value.user!.uid;
+      _phoneNumber = value.user!.phoneNumber;
+      _isLoading = false;
+      onSuccess();
+      _isSuccessful = true;
+      notifyListeners();
+    }).catchError((e) {
+      _isSuccessful = false;
+      _isLoading = false;
+      notifyListeners();
+      showSnackBar(context, e.toString()); // ScaffoldMessenger.of(context).showSnackBar(snackBar)
+    });
+  }}

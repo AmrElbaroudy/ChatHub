@@ -1,4 +1,23 @@
 class Constant{
+  //Screen routs
+  static const String login = '/loginScreen';
+  static const String home = '/homeScreen';
+  static const String otp = '/otpScreen';
+  static const String userInfo = '/userInfoScreen';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   static const String uid = "uid";
   static const String name = "name";
   static const String photoUrl = "photoUrl";
@@ -12,4 +31,9 @@ class Constant{
   static const String friends = "friends";
   static const String friendRequests = "friendRequests";
   static const String sentFriendRequests = "sentFriendRequests";
+
+  static const String user = "user";
+
+  static const String verificationId = "verificationId";
+  static const String userModel = "userModel";
 }

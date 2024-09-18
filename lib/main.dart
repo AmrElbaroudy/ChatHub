@@ -1,10 +1,13 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:chat_hub/authentication/login_screen.dart';
+import 'package:chat_hub/authentication/otp_screen.dart';
+import 'package:chat_hub/authentication/user_info_screen.dart';
 import 'package:chat_hub/main_screen/home_screen.dart';
 import 'package:chat_hub/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'constant.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -45,7 +48,13 @@ class MyApp extends StatelessWidget {
         title: 'ChatHub',
         theme: theme,
         darkTheme: darkTheme,
-        home: const LoginScreen(),
+        initialRoute: Constant.login,
+        routes: {
+          Constant.login: (context) => const LoginScreen(),
+          Constant.otp: (context) => const OTPScreen(),
+          Constant.userInfo: (context) => const UserInfoScreen(),
+          Constant.home: (context) => const HomeScreen(),
+        },
       ),
     );
   }
