@@ -33,7 +33,7 @@ class Constant{
   static const String sentFriendRequests = "sentFriendRequests";
 
   static const String user = "user";
-
+  static const String userImage = "userImage";
   static const String verificationId = "verificationId";
   static const String userModel = "userModel";
 }
